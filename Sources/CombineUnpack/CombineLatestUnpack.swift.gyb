@@ -1,0 +1,36 @@
+import Combine
+%{
+from environs import Env
+env = Env()
+env.read_env()
+max_arguments = int(env("MAX_ARGUMENTS"))
+
+def param_types_list(arguments):
+    return map(lambda x: "X%d" % (x + 1), range(0, arguments))
+
+param_types = map(param_types_list, range(3, max_arguments + 1))
+}%
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Publishers.CombineLatest {
+
+% for param_list in param_types:
+    %{
+    generics = ", ".join(param_list)
+    a_type_generics = "(" * (len(param_list) - 2) + "X1, " + "), ".join(param_list[1:-1])
+    b_type_generics = param_list[-1]
+    arguments_list = ", ".join(param_list)
+    return_type = "AnyPublisher<(" + generics + "), Failure> where A.Output == " + a_type_generics + "), B.Output == " + b_type_generics
+    a_type_variables = a_type_generics.lower()
+    return_statement = ", ".join(map(lambda x: x.lower(), param_list[0:-1]) + ["b"])
+    }%
+    public func unpack<${generics}>() -> ${return_type} {
+        map { a, b in
+            let ${a_type_variables}) = a
+            return (${return_statement})
+        }
+        .eraseToAnyPublisher()
+    }
+    
+%end
+}
