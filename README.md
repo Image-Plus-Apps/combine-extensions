@@ -1,4 +1,4 @@
-# combine-unpack
+# combine-extensions
 
 [![Swift](https://github.com/richard-clements/combine-unpack/actions/workflows/swift.yml/badge.svg)](https://github.com/richard-clements/combine-unpack/actions/workflows/swift.yml)
 
