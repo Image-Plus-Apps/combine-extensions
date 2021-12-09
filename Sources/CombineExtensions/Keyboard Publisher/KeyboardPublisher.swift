@@ -20,7 +20,6 @@ private struct KeyboardChangeInfo: KeyboardTransitioningContext {
 
 extension UIViewController {
     
-    @available(iOS 13.0, *)
     public func keyboardChangePublisher() -> AnyPublisher<KeyboardTransitioningContext, Never> {
         return NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification, object: nil)
             .compactMap { (notification: Notification) -> KeyboardTransitioningContext? in
@@ -39,7 +38,6 @@ extension UIViewController {
             .eraseToAnyPublisher()
     }
     
-    @available(iOS 13.0, *)
     public func bottomContentInset(for context: KeyboardTransitioningContext) -> CGFloat {
         guard let window = view.window else {
             return 0
