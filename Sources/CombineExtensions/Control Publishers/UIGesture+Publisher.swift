@@ -85,6 +85,8 @@ extension UIGestureRecognizer {
         createAndConfigure(configuration: configuration)
     }
     
+    #if os(iOS)
+    
     public static func pinch(configuration: (UIPinchGestureRecognizer) -> Void = { _ in }) -> UIPinchGestureRecognizer {
         createAndConfigure(configuration: configuration)
     }
@@ -92,6 +94,8 @@ extension UIGestureRecognizer {
     public static func edge(configuration: (UIScreenEdgePanGestureRecognizer) -> Void = { _ in }) -> UIScreenEdgePanGestureRecognizer {
         createAndConfigure(configuration: configuration)
     }
+    
+    #endif
 }
 
 extension UIView {

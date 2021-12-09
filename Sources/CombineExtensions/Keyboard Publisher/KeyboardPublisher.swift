@@ -1,8 +1,8 @@
-#if canImport(Combine) && canImport(UIKit)
+#if canImport(Combine) && canImport(UIKit) && os(iOS)
 import Combine
 import UIKit
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+@available(iOS 13.0, *)
 public protocol KeyboardTransitioningContext {
     var animationCurve: UIView.AnimationCurve { get }
     var animationDuration: TimeInterval { get }
@@ -10,7 +10,7 @@ public protocol KeyboardTransitioningContext {
     var startFrame: CGRect { get }
 }
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+@available(iOS 13.0, *)
 private struct KeyboardChangeInfo: KeyboardTransitioningContext {
     let animationCurve: UIView.AnimationCurve
     let animationDuration: TimeInterval
@@ -18,11 +18,12 @@ private struct KeyboardChangeInfo: KeyboardTransitioningContext {
     let startFrame: CGRect
 }
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension UIViewController {
+    
+    @available(iOS 13.0, *)
     public func keyboardChangePublisher() -> AnyPublisher<KeyboardTransitioningContext, Never> {
-        NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)
-            .compactMap { (notification) in
+        return NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+            .compactMap { (notification: Notification) -> KeyboardTransitioningContext? in
                 guard let dict = notification.userInfo,
                       let animationDuration = dict[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
                       let animationCurveInt = dict[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int,
@@ -38,6 +39,7 @@ extension UIViewController {
             .eraseToAnyPublisher()
     }
     
+    @available(iOS 13.0, *)
     public func bottomContentInset(for context: KeyboardTransitioningContext) -> CGFloat {
         guard let window = view.window else {
             return 0
